@@ -12,12 +12,9 @@ walking once the PDFConverter returns structured nodes.
 from typing import List, Dict, Any, Tuple
 import math
 import re
-import logging
 from itertools import islice
 from rag_system.ingestion.chunking import MarkdownRecursiveChunker
 from transformers import AutoTokenizer
-
-logger = logging.getLogger(__name__)
 
 class DoclingChunker:
     def __init__(self, *, max_tokens: int = 512, overlap: int = 1, tokenizer_model: str = "Qwen/Qwen3-Embedding-0.6B"):
@@ -49,9 +46,7 @@ class DoclingChunker:
 
     def split_markdown(self, markdown: str, *, document_id: str, metadata: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Split one Markdown doc into chunks with max_tokens limit."""
-        logger.info(f"[DoclingChunker] split_markdown: {len(markdown):,} chars, max_tokens={self.max_tokens}")
         base_chunks = self.legacy.chunk(markdown, document_id, metadata)
-        logger.info(f"[DoclingChunker] legacy chunker produced {len(base_chunks)} base chunks, starting token-level packing...")
         new_chunks: List[Dict[str, Any]] = []
         global_idx = 0
         for ch in base_chunks:
@@ -85,7 +80,6 @@ class DoclingChunker:
                     back = window[-self.overlap:] if self.overlap <= len(window) else window[:]
                     sentences = back + sentences
                 window = []
-        logger.info(f"[DoclingChunker] split_markdown done: {len(new_chunks)} chunks")
         return new_chunks
 
     # ------------------------------------------------------------------

@@ -4,6 +4,7 @@ from docling.datamodel.pipeline_options import PdfPipelineOptions, OcrMacOptions
 from docling.datamodel.base_models import InputFormat
 import fitz  # PyMuPDF for quick text inspection
 import os
+import pandas as pd # For Excel handling
 
 class DocumentConverter:
     """
@@ -18,7 +19,9 @@ class DocumentConverter:
         '.html': InputFormat.HTML,
         '.htm': InputFormat.HTML,
         '.md': InputFormat.MD,
-        '.txt': 'TXT',  # Special handling for plain text files
+        '.txt': 'TXT',    # Special handling for plain text files
+        '.xlsx': 'EXCEL', # Special handling for Excel files
+        '.xls': 'EXCEL',  # Special handling for legacy Excel files
     }
     
     def __init__(self):
@@ -71,6 +74,8 @@ class DocumentConverter:
             return self._convert_pdf_to_markdown(file_path)
         elif input_format == 'TXT':
             return self._convert_txt_to_markdown(file_path)
+        elif input_format == 'EXCEL':
+            return self._convert_excel_to_markdown(file_path)
         else:
             return self._convert_general_to_markdown(file_path, input_format)
     
@@ -110,6 +115,28 @@ class DocumentConverter:
             print(f"Error processing TXT file {file_path}: {e}")
             return []
     
+    def _convert_excel_to_markdown(self, file_path: str) -> List[Tuple[str, Dict[str, Any]]]:
+        """Convert Excel files (.xlsx, .xls) to Markdown — each sheet becomes a Markdown table."""
+        print(f"Converting {file_path} (Excel) to Markdown table...")
+        try:
+            sheets = pd.read_excel(file_path, sheet_name=None)
+        except Exception as e:
+            print(f"Error reading Excel file {file_path}: {e}")
+            return []
+        
+        markdown_parts = []
+        for sheet_name, df in sheets.items():
+            df = df.astype(object).fillna('')
+            
+            markdown_parts.append(f"## {sheet_name}\n")
+            markdown_parts.append(df.to_markdown(index=False, storage_options={'tablefmt': "heavy_grid"}))
+            markdown_parts.append("\n")
+        
+        markdown_content = '\n'.join(markdown_parts)    
+        metadata = {"source": file_path}
+        print(f"Successfully converted {file_path} (Excel) to Markdown table.")
+        return [(markdown_content, metadata)]
+
     def _convert_general_to_markdown(self, file_path: str, input_format: InputFormat) -> List[Tuple[str, Dict[str, Any]]]:
         """Convert non-PDF formats using general converter."""
         print(f"Converting {file_path} ({input_format.name}) to Markdown using docling...")

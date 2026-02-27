@@ -1,9 +1,6 @@
 from typing import List, Dict, Any
 import os
-import logging
 import networkx as nx
-
-logger = logging.getLogger(__name__)
 from rag_system.ingestion.document_converter import DocumentConverter
 from rag_system.ingestion.chunking import MarkdownRecursiveChunker
 from rag_system.indexing.representations import EmbeddingGenerator, select_embedder
@@ -162,21 +159,17 @@ class IndexingPipeline:
                         
                         pages_data = self.document_converter.convert_to_markdown(file_path)
                         file_chunks = []
-
+                        
                         for tpl in pages_data:
                             if len(tpl) == 3:
                                 markdown_text, metadata, doc_obj = tpl
                                 if hasattr(self.chunker, "chunk_document"):
-                                    logger.info(f"[Chunker] chunk_document() on {document_id} ({len(markdown_text):,} chars)")
                                     chunks = self.chunker.chunk_document(doc_obj, document_id=document_id, metadata=metadata)
                                 else:
-                                    logger.info(f"[Chunker] chunk() on {document_id} ({len(markdown_text):,} chars)")
                                     chunks = self.chunker.chunk(markdown_text, document_id, metadata)
                             else:
                                 markdown_text, metadata = tpl
-                                logger.info(f"[Chunker] chunk() on {document_id} ({len(markdown_text):,} chars)")
                                 chunks = self.chunker.chunk(markdown_text, document_id, metadata)
-                            logger.info(f"[Chunker] Done: {len(chunks)} chunks produced")
                             file_chunks.extend(chunks)
                         
                         # Add a sequential chunk_index to each chunk within the document
