@@ -41,8 +41,9 @@ print("✅ RAG Agent initialized successfully with MAXIMUM ACCURACY.")
 
 def _apply_index_embedding_model(idx_ids):
     """Ensure retrieval pipeline uses the embedding model stored with the first index."""
+    os.makedirs("logs", exist_ok=True)
     debug_info = f"🔧 _apply_index_embedding_model called with idx_ids: {idx_ids}\n"
-    
+
     if not idx_ids:
         debug_info += "⚠️ No index IDs provided\n"
         with open("logs/embedding_debug.log", "a") as f:
