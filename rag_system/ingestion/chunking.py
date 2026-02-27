@@ -92,8 +92,11 @@ class MarkdownRecursiveChunker:
         if not text:
             return []
 
+        print(f"\n[Chunker] '{document_id}' | текст: {self._token_len(text)} токенов, {len(text)} символов")
+
         raw_chunks = self._split_text(text, self.split_priority)
-        
+        print(f"[Chunker] После split: {len(raw_chunks)} сырых чанков")
+
         merged_chunks_text = []
         current_chunk = ""
         for chunk_text in raw_chunks:
@@ -108,6 +111,8 @@ class MarkdownRecursiveChunker:
         if current_chunk:
             merged_chunks_text.append(current_chunk)
 
+        print(f"[Chunker] После merge: {len(merged_chunks_text)} чанков")
+
         final_chunks = []
         for i, chunk_text in enumerate(merged_chunks_text):
             # Combine document-level metadata with chunk-specific metadata
@@ -117,12 +122,17 @@ class MarkdownRecursiveChunker:
                 "chunk_number": i,
             })
             
+            chunk_tokens = self._token_len(chunk_text.strip())
+            preview = chunk_text.strip()[:80].replace('\n', ' ')
+            print(f"  [{i}] {chunk_tokens} токенов | {preview!r}")
+
             final_chunks.append({
                 "chunk_id": f"{document_id}_{i}", # Create a more unique ID
                 "text": chunk_text.strip(),
                 "metadata": combined_metadata
             })
 
+        print(f"[Chunker] Готово: {len(final_chunks)} чанков для '{document_id}'")
         return final_chunks
 
 def create_contextual_window(all_chunks: List[Dict[str, Any]], chunk_index: int, window_size: int = 1) -> str:
