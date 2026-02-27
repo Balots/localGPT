@@ -11,7 +11,7 @@ class MarkdownRecursiveChunker:
     def __init__(self, max_chunk_size: int = 1500, min_chunk_size: int = 200, tokenizer_model: str = "Qwen/Qwen3-Embedding-0.6B"):
         self.max_chunk_size = max_chunk_size
         self.min_chunk_size = min_chunk_size
-        self.split_priority = ["\n## ", "\n### ", "\n#### ", "```", "\n\n"]
+        self.split_priority = ["\n## ", "\n### ", "\n#### ", "```", "\n\n", "\n|"]
         
         repo_id = tokenizer_model
         if "/" not in tokenizer_model and not tokenizer_model.startswith("Qwen/"):
