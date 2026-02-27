@@ -135,6 +135,7 @@ class DocumentConverter:
         markdown_content = '\n'.join(markdown_parts)    
         metadata = {"source": file_path}
         print(f"Successfully converted {file_path} (Excel) to Markdown table.")
+        print(markdown_content)
         return [(markdown_content, metadata)]
 
     def _convert_general_to_markdown(self, file_path: str, input_format: InputFormat) -> List[Tuple[str, Dict[str, Any]]]:
