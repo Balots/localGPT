@@ -125,19 +125,14 @@ class DocumentConverter:
             print(f"Error reading Excel file {file_path}: {e}")
             return []
         
-        markdown_parts = []
+        result = []
         for sheet_name, df in sheets.items():
             df = df.astype(object).fillna('')
-            
-            markdown_parts.append(f"## {sheet_name}\n")
-            markdown_parts.append(re.sub(r' {2,}', '\t', df.to_markdown(index=False, storage_options={'tablefmt': "heavy_grid"})))
-            markdown_parts.append("\n")
+            sheet_metadata = {"source": file_path, "sheet": sheet_name}
+            result.append(f"## {sheet_name}\n" + df.to_markdown(index=False, storage_options={'tablefmt': "heavy_grid"}), sheet_metadata)
         
-        markdown_content = '\n'.join(markdown_parts)    
-        metadata = {"source": file_path}
         print(f"Successfully converted {file_path} (Excel) to Markdown table.")
-        print(markdown_content)
-        return [(markdown_content, metadata)]
+        return result
 
     def _convert_general_to_markdown(self, file_path: str, input_format: InputFormat) -> List[Tuple[str, Dict[str, Any]]]:
         """Convert non-PDF formats using general converter."""
