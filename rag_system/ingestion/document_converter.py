@@ -129,7 +129,7 @@ class DocumentConverter:
         for sheet_name, df in sheets.items():
             df = df.astype(object).fillna('')
             sheet_metadata = {"source": file_path, "sheet": sheet_name}
-            result.append(f"## {sheet_name}\n" + df.to_markdown(index=False, storage_options={'tablefmt': "heavy_grid"}), sheet_metadata)
+            result.append((f"## {sheet_name}\n" + df.to_markdown(index=False, storage_options={'tablefmt': "heavy_grid"}), sheet_metadata))
         
         print(f"Successfully converted {file_path} (Excel) to Markdown table.")
         return result
