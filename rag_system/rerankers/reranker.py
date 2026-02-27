@@ -8,12 +8,13 @@ class QwenReranker:
     """
     def __init__(self, model_name: str = "BAAI/bge-reranker-base"):
         # Auto-select the best available device: CUDA > MPS > CPU
-        if torch.cuda.is_available():
-            self.device = "cuda"
-        elif getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
-            self.device = "mps"
-        else:
-            self.device = "cpu"
+        #if torch.cuda.is_available():
+        #    self.device = "cuda"
+        #elif getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
+        #    self.device = "mps"
+        #else:
+        #    self.device = "cpu"
+        self.device = "cpu"
         print(f"Initializing BGE Reranker with model '{model_name}' on device '{self.device}'.")
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForSequenceClassification.from_pretrained(

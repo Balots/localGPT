@@ -185,7 +185,7 @@ class AdvancedRagApiHandler(http.server.BaseHTTPRequestHandler):
             if session_id:
                 try:
                     # Check if this is the first message by calling the backend server
-                    backend_url = f"http://localhost:8000/sessions/{session_id}"
+                    backend_url = f"http://localhost:8888/sessions/{session_id}"
                     session_resp = requests.get(backend_url)
                     if session_resp.status_code == 200:
                         session_data = session_resp.json()
@@ -344,7 +344,7 @@ class AdvancedRagApiHandler(http.server.BaseHTTPRequestHandler):
             if session_id:
                 try:
                     # Check if this is the first message by calling the backend server
-                    backend_url = f"http://localhost:8000/sessions/{session_id}"
+                    backend_url = f"http://localhost:8888/sessions/{session_id}"
                     session_resp = requests.get(backend_url)
                     if session_resp.status_code == 200:
                         session_data = session_resp.json()
@@ -741,7 +741,7 @@ class AdvancedRagApiHandler(http.server.BaseHTTPRequestHandler):
         response = json.dumps(data, indent=2)
         self.wfile.write(response.encode('utf-8'))
 
-def start_server(port=8001):
+def start_server(port=8889):
     """Starts the API server."""
     # Use a reusable TCP server to avoid "address in use" errors on restart
     class ReusableTCPServer(socketserver.TCPServer):

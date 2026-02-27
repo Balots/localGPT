@@ -24,7 +24,8 @@ class LateChunkEncoder:
     def __init__(self, model_name: str = "Qwen/Qwen3-Embedding-0.6B", *, max_tokens: int = 8192) -> None:
         self.model_name = model_name
         self.max_len = max_tokens
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        #self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cpu") 
         # Back-compat: allow short alias without repo namespace
         repo_id = model_name
         if "/" not in model_name and not model_name.startswith("Qwen/"):

@@ -19,13 +19,13 @@ class QwenEmbedder(EmbeddingModel):
     def __init__(self, model_name: str = "Qwen/Qwen3-Embedding-0.6B"):
         self.model_name = model_name
         # Auto-select the best available device: CUDA > MPS > CPU
-        if torch.cuda.is_available():
-            self.device = "cuda"
-        elif getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
-            self.device = "mps"
-        else:
-            self.device = "cpu"
-
+        #if torch.cuda.is_available():
+        #    self.device = "cuda"
+        #elif getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
+        #    self.device = "mps"
+        #else:
+        #    self.device = "cpu"
+        self.device = "cpu"
         # Use model-specific cache
         if model_name not in _MODEL_CACHE:
             print(f"Initializing HF Embedder with model '{model_name}' on device '{self.device}'. (first load)")
