@@ -5,6 +5,7 @@ from docling.datamodel.base_models import InputFormat
 import fitz  # PyMuPDF for quick text inspection
 import os
 import pandas as pd # For Excel handling
+import re
 
 class DocumentConverter:
     """
@@ -129,7 +130,7 @@ class DocumentConverter:
             df = df.astype(object).fillna('')
             
             markdown_parts.append(f"## {sheet_name}\n")
-            markdown_parts.append(df.to_markdown(index=False, storage_options={'tablefmt': "heavy_grid"}))
+            markdown_parts.append(re.sub(r' {2,}', '\t', df.to_markdown(index=False, storage_options={'tablefmt': "heavy_grid"})))
             markdown_parts.append("\n")
         
         markdown_content = '\n'.join(markdown_parts)    
