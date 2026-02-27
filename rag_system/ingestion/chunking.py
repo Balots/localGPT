@@ -41,7 +41,7 @@ class MarkdownRecursiveChunker:
             new_chunks = []
             for chunk in chunks_to_process:
                 if self._token_len(chunk) > self.max_chunk_size:
-                    sub_chunks = re.split(f'({sep})', chunk)
+                    sub_chunks = re.split(f'({re.escape(sep)})', chunk)
                     combined = []
                     i = 0
                     while i < len(sub_chunks):
